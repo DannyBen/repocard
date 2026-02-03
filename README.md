@@ -2,13 +2,12 @@
 
 ![repocard](/repocard.svg)
 
-Generate a simple, dashboard-like SVG for repo status badges from a tiny config
-file. Supports any number of cards and any Label=Value pairs.
-
+Generate a simple SVG repo card that summarizes repository metadata from a tiny
+config file. Supports any number of cards and arbitrary Label=Value pairs.
 
 ## Install
 
-Download the executable to your path.
+Download the executable `repocard` bash script to your path.
 
 ## Usage
 
