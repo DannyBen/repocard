@@ -7,7 +7,14 @@ config file. Supports any number of cards and arbitrary Label=Value pairs.
 
 ## Install
 
-Download the executable [`repocard`][executable] bash script to your path. 
+Download the executable [`repocard`][executable] bash script to any directory
+that is already in your PATH. 
+
+```shell
+# This downloads the latest release version
+wget https://get.dannyb.co/repocard
+sudo install repocard /usr/local/bin
+```
 
 ## Usage
 
