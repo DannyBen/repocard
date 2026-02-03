@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Simple SVG generator driven by ./.repo-status.conf
-# Usage: ./repo-status.sh > repo-status.svg
+# Simple SVG generator driven by ./.repocard.conf
+# Usage: ./repocard.sh > repocard.svg
 
-conf_file="${1:-.repo-status.conf}"
+conf_file="${1:-.repocard.conf}"
 
 if [[ ! -f "$conf_file" ]]; then
   echo "Missing config: $conf_file" >&2
@@ -12,16 +12,17 @@ if [[ ! -f "$conf_file" ]]; then
 fi
 
 # Defaults (keep minimal, fixed sizing)
-title="Repo Status"
-cols=3
-width=220
+layout="standard"
+caption="Repo Card"
+cols=4
+width=180
 height=65
 gap=12
 padding=16
 title_height=28
 bg="f7f7f5"
-text="1f2328"
-muted="5a6572"
+title="1f2328"
+label="5a6572"
 border="e6e6e2"
 card="ffffff"
 
@@ -34,6 +35,9 @@ black="1f2328"
 grey="6b7280"
 
 items=()
+caption_set=0
+bg_set=0
+padding_set=0
 
 trim() {
   local s="$1"
@@ -66,19 +70,31 @@ while IFS= read -r line || [[ -n "$line" ]]; do
   fi
 
   case "$key" in
-    title) title="$val" ;;
+    layout)
+      layout="$val"
+      if [[ "$layout" == "compact" ]]; then
+        if [[ "$caption_set" -eq 0 ]]; then caption=""; fi
+        if [[ "$bg_set" -eq 0 ]]; then bg="none"; fi
+        if [[ "$padding_set" -eq 0 ]]; then padding=0; fi
+      fi
+      ;;
+    caption) caption="$val" ;;
     cols) cols="$val" ;;
     width) width="$val" ;;
     height) height="$val" ;;
     gap) gap="$val" ;;
-    padding) padding="$val" ;;
-    bg) bg="$val" ;;
-    text) text="$val" ;;
-    muted) muted="$val" ;;
+    padding) padding="$val"; padding_set=1 ;;
+    bg) bg="$val"; bg_set=1 ;;
+    title) title="$val" ;;
+    label) label="$val" ;;
     border) border="$val" ;;
     card) card="$val" ;;
     green|yellow|orange|red|blue|black|grey) printf -v "$key" "%s" "$val" ;;
   esac
+
+  if [[ "$key" == "caption" ]]; then
+    caption_set=1
+  fi
 done < "$conf_file"
 
 if [[ "${#items[@]}" -eq 0 ]]; then
@@ -92,7 +108,7 @@ if [[ "$cols" -gt "$item_count" ]]; then cols="$item_count"; fi
 rows=$(( (item_count + cols - 1) / cols ))
 
 title_block=0
-if [[ -n "$title" ]]; then
+if [[ -n "$caption" ]]; then
   title_block=$((title_height + 8))
 fi
 
@@ -125,16 +141,16 @@ border_stroke="$(color_or_none "$border")"
 
 echo "<svg xmlns='http://www.w3.org/2000/svg' width='${svg_width}' height='${svg_height}' viewBox='0 0 ${svg_width} ${svg_height}'>"
 echo "<style>"
-echo "  .title { font-family: ${font_stack}; font-size: 16px; font-weight: 600; fill: #${text}; }"
-echo "  .label { font-family: ${font_stack}; font-size: 11px; font-weight: 600; letter-spacing: 0.6px; fill: #${muted}; }"
+echo "  .title { font-family: ${font_stack}; font-size: 16px; font-weight: 600; fill: #${title}; }"
+echo "  .label { font-family: ${font_stack}; font-size: 11px; font-weight: 600; letter-spacing: 0.6px; fill: #${label}; }"
 echo "  .value { font-family: ${font_stack}; font-size: 16px; font-weight: 600; }"
 echo "  .card { fill: ${card_fill}; stroke: ${border_stroke}; }"
 echo "  .accent { height: 6px; }"
 echo "</style>"
 echo "<rect x='0' y='0' width='${svg_width}' height='${svg_height}' fill='${bg_fill}' />"
 
-if [[ -n "$title" ]]; then
-  echo "<text x='${padding}' y='$((padding + 18))' class='title'>$(esc "$title")</text>"
+if [[ -n "$caption" ]]; then
+  echo "<text x='${padding}' y='$((padding + 18))' class='title'>$(esc "$caption")</text>"
 fi
 
 start_y=$((padding + title_block))

@@ -1,8 +1,10 @@
-# repo-status
+# repocard
 
-Generate a simple, dashboard-like SVG for repo status badges from a tiny config file. Supports any number of cards and any Label=Value pairs.
+![repocard](/repocard.svg)
 
-![repo-status](/repo-status.svg)
+Generate a simple, dashboard-like SVG for repo status badges from a tiny config
+file. Supports any number of cards and any Label=Value pairs.
+
 
 ## Install
 
@@ -10,16 +12,16 @@ Download the executable to your path.
 
 ## Usage
 
-Create a config file (default is `./.repo-status.conf`) and run:
+Create a config file (default is `./.repocard.conf`) and run:
 
-```
-./repo-status > repo-status.svg
+```shell
+repocard > repocard.svg
 ```
 
 Or with an explicit config path:
 
-```
-./repo-status path/to/.repo-status.conf > repo-status.svg
+```shell
+repocard path/to.conf > repocard.svg
 ```
 
 ## Minimal config
@@ -34,22 +36,24 @@ item=Code Base Status|blue|Beta
 ## Full config
 
 ```ini
-title=Repo Status
+layout=standard
+
+caption=Repo Status
 cols=3
 width=220
 height=65
 gap=12
 padding=16
 bg=f7f7f5
-text=1f2328
-muted=5a6572
+title=1f2328
+label=5a6572
 border=e6e6e2
 card=ffffff
 
-green=1a7f37
-yellow=b78103
-orange=d16c00
 red=cc3344
+orange=d16c00
+yellow=b78103
+green=1a7f37
 blue=0b62d6
 black=1f2328
 grey=6b7280
@@ -62,7 +66,8 @@ item=Maintenance Status|red|Abandoned
 ## Config notes
 
 - One `item=` per line, format is `Label|color|Value`
+- `layout` defaults to `standard`; `compact` changes defaults to `caption=""`, `bg=none`, `padding=0`
 - Supported colors: `green, yellow, orange, red, blue, black, grey`
-- Empty `title` hides the title row
+- Empty `caption` hides the title row
 - `bg`, `card`, and `border` accept hex values or `transparent`/`none`
-- `muted` controls the label text color (title uses `text`)
+- `title` controls the caption text color; `label` controls the label text color
