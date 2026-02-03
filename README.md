@@ -1,13 +1,13 @@
 # repocard
 
-![repocard](/repocard.svg)
+![repocard](repocard.svg)
 
 Generate a simple SVG repo card that summarizes repository metadata from a tiny
 config file. Supports any number of cards and arbitrary Label=Value pairs.
 
 ## Install
 
-Download the executable `repocard` bash script to your path.
+Download the executable [`repocard`][executable] bash script to your path. 
 
 ## Usage
 
@@ -70,3 +70,6 @@ item=Maintenance Status|red|Abandoned
 - Empty `caption` hides the title row
 - `bg`, `card`, and `border` accept hex values or `transparent`/`none`
 - `title` controls the caption text color; `label` controls the label text color
+
+
+[executable]: https://github.com/DannyBen/repocard/blob/master/repocard
