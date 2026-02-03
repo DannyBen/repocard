@@ -1,14 +1,19 @@
 #!/usr/bin/env bash
+# Simple SVG generator driven by .repocard.conf
+# Usage: repocard > repocard.svg
+
 set -euo pipefail
 
 version=0.1.0
 
-# Simple SVG generator driven by .repocard.conf
-# Usage: repocard > repocard.svg
+if [[ "${1:-}" == "-v" || "${1:-}" == "--version" ]]; then
+  echo "repocard v$version"
+  exit 0
+fi
+
 conf_file="${1:-.repocard.conf}"
 
 if [[ ! -f "$conf_file" ]]; then
-  echo "repocard v$version"
   echo "missing config: $conf_file" >&2
   exit 1
 fi
