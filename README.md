@@ -44,7 +44,7 @@ item=Code Base Status|blue|Beta
 ```ini
 layout=standard
 
-caption=Repo Status
+caption=Repo Card
 cols=3
 width=220
 height=65
