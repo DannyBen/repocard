@@ -4,7 +4,7 @@
 
 set -euo pipefail
 
-version=0.1.0
+version=0.1.1
 
 if [[ "${1:-}" == "-v" || "${1:-}" == "--version" ]]; then
   echo "repocard v$version"
