@@ -41,6 +41,9 @@ item=Code Base Status|blue|Beta
 
 ## Full config
 
+<details>
+<summary>Show full config example</summary>
+
 ```ini
 caption=Repo Card
 cols=3
@@ -59,25 +62,27 @@ border_dark=30363d
 card=ffffff
 card_dark=0d1117
 
-red=cf222e
-red_dark=cf222e
-orange=d05a00
-orange_dark=d05a00
-yellow=b88a00
-yellow_dark=b88a00
-green=1a7f37
-green_dark=1a7f37
-blue=0969da
-blue_dark=2f81f7
-strong=1f2328
-strong_dark=f0f6fc
-neutral=6b7280
-neutral_dark=8b949e
+green=22C55E
+green_dark=22C55E
+yellow=EAB308
+yellow_dark=EAB308
+orange=F97316
+orange_dark=F97316
+red=EF4444
+red_dark=EF4444
+blue=3B82F6
+blue_dark=3B82F6
+neutral=8F8F8F
+neutral_dark=A3A3A3
+strong=222222
+strong_dark=dddddd
 
 item=Development Status|green|Actively Developed
 item=Code Base Status|blue|Beta
 item=Maintenance Status|red|Abandoned
 ```
+
+</details>
 
 ## Config notes
 

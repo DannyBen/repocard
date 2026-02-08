@@ -6,19 +6,6 @@ set -euo pipefail
 
 version=0.2.0
 
-if [[ "${1:-}" == "-v" || "${1:-}" == "--version" ]]; then
-  echo "repocard v$version"
-  exit 0
-fi
-
-conf_file="${1:-.repocard.conf}"
-
-if [[ ! -f "$conf_file" ]]; then
-  echo "missing config: $conf_file" >&2
-  exit 1
-fi
-
-# Defaults (keep minimal, fixed sizing)
 caption="Repo Card"
 cols=4
 width=180
@@ -70,62 +57,6 @@ parse_kv() {
   printf "%s\037%s" "$key" "$val"
 }
 
-while IFS= read -r line || [[ -n "$line" ]]; do
-  line="$(trim "$line")"
-  [[ -z "$line" ]] && continue
-  [[ "$line" == \#* ]] && continue
-
-  kv="$(parse_kv "$line")"
-  key="${kv%%$'\037'*}"
-  val="${kv#*$'\037'}"
-
-  if [[ "$key" == "item" ]]; then
-    items+=("$val")
-    continue
-  fi
-
-  case "$key" in
-    caption) caption="$val" ;;
-    cols) cols="$val" ;;
-    width) width="$val" ;;
-    height) height="$val" ;;
-    gap) gap="$val" ;;
-    padding) padding="$val" ;;
-    bg) bg="$val" ;;
-    bg_dark) bg_dark="$val" ;;
-    title) title="$val" ;;
-    title_dark) title_dark="$val" ;;
-    label) label="$val" ;;
-    label_dark) label_dark="$val" ;;
-    border) border="$val" ;;
-    border_dark) border_dark="$val" ;;
-    card) card="$val" ;;
-    card_dark) card_dark="$val" ;;
-    green|yellow|orange|red|blue|strong|neutral) printf -v "$key" "%s" "$val" ;;
-    green_dark|yellow_dark|orange_dark|red_dark|blue_dark|strong_dark|neutral_dark) printf -v "$key" "%s" "$val" ;;
-  esac
-done < "$conf_file"
-
-if [[ "${#items[@]}" -eq 0 ]]; then
-  items=("No data|neutral|Add items")
-fi
-
-if [[ "$cols" -lt 1 ]]; then cols=1; fi
-
-item_count="${#items[@]}"
-if [[ "$cols" -gt "$item_count" ]]; then cols="$item_count"; fi
-rows=$(( (item_count + cols - 1) / cols ))
-
-title_block=0
-if [[ -n "$caption" ]]; then
-  title_block=$((title_height + 8))
-fi
-
-svg_width=$((padding * 2 + cols * width + (cols - 1) * gap))
-svg_height=$((padding * 2 + rows * height + (rows - 1) * gap + title_block))
-
-font_stack='"Segoe UI","Helvetica Neue",Arial,"Noto Sans",sans-serif'
-
 esc() {
   local s="$1"
   s="${s//&/&amp;}"
@@ -163,6 +94,81 @@ accent_color() {
       ;;
   esac
 }
+
+parse_config() {
+  local conf_file="$1"
+  local line kv key val
+
+  while IFS= read -r line || [[ -n "$line" ]]; do
+    line="$(trim "$line")"
+    [[ -z "$line" ]] && continue
+    [[ "$line" == \#* ]] && continue
+
+    kv="$(parse_kv "$line")"
+    key="${kv%%$'\037'*}"
+    val="${kv#*$'\037'}"
+
+    if [[ "$key" == "item" ]]; then
+      items+=("$val")
+      continue
+    fi
+
+    case "$key" in
+      caption) caption="$val" ;;
+      cols) cols="$val" ;;
+      width) width="$val" ;;
+      height) height="$val" ;;
+      gap) gap="$val" ;;
+      padding) padding="$val" ;;
+      bg) bg="$val" ;;
+      bg_dark) bg_dark="$val" ;;
+      title) title="$val" ;;
+      title_dark) title_dark="$val" ;;
+      label) label="$val" ;;
+      label_dark) label_dark="$val" ;;
+      border) border="$val" ;;
+      border_dark) border_dark="$val" ;;
+      card) card="$val" ;;
+      card_dark) card_dark="$val" ;;
+      green|yellow|orange|red|blue|strong|neutral) printf -v "$key" "%s" "$val" ;;
+      green_dark|yellow_dark|orange_dark|red_dark|blue_dark|strong_dark|neutral_dark) printf -v "$key" "%s" "$val" ;;
+    esac
+  done < "$conf_file"
+}
+
+if [[ "${1:-}" == "-v" || "${1:-}" == "--version" ]]; then
+  echo "repocard v$version"
+  exit 0
+fi
+
+conf_file="${1:-.repocard.conf}"
+
+if [[ ! -f "$conf_file" ]]; then
+  echo "missing config: $conf_file" >&2
+  exit 1
+fi
+
+parse_config "$conf_file"
+
+if [[ "${#items[@]}" -eq 0 ]]; then
+  items=("No data|neutral|Add items")
+fi
+
+if [[ "$cols" -lt 1 ]]; then cols=1; fi
+
+item_count="${#items[@]}"
+if [[ "$cols" -gt "$item_count" ]]; then cols="$item_count"; fi
+rows=$(( (item_count + cols - 1) / cols ))
+
+title_block=0
+if [[ -n "$caption" ]]; then
+  title_block=$((title_height + 8))
+fi
+
+svg_width=$((padding * 2 + cols * width + (cols - 1) * gap))
+svg_height=$((padding * 2 + rows * height + (rows - 1) * gap + title_block))
+
+font_stack='"Segoe UI","Helvetica Neue",Arial,"Noto Sans",sans-serif'
 
 bg_fill="$(color_or_none "$bg")"
 bg_fill_dark="$(color_or_none "$bg_dark")"
