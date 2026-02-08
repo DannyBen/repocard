@@ -1,0 +1,58 @@
+<!-- Generated with repocard v0.2.0 (https://github.com/dannyben/repocard) -->
+<svg xmlns='http://www.w3.org/2000/svg' width='788' height='133' viewBox='0 0 788 133'>
+<style>
+  :root {
+    color-scheme: light dark;
+    --title: #1f2328;
+    --label: #5a6572;
+    --border: #e6e6e2;
+    --card: #ffffff;
+    --bg: #f7f7f5;
+    --accent-green: #1a7f37;
+    --accent-yellow: #b78103;
+    --accent-orange: #d16c00;
+    --accent-red: #cc3344;
+    --accent-blue: #0b62d6;
+    --accent-strong: #1f2328;
+    --accent-neutral: #6b7280;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --title: #f0f6fc;
+      --label: #8b949e;
+      --border: #30363d;
+      --card: #0d1117;
+      --bg: #161b22;
+      --accent-green: #3fb950;
+      --accent-yellow: #d29922;
+      --accent-orange: #db6d28;
+      --accent-red: #f85149;
+      --accent-blue: #58a6ff;
+      --accent-strong: #f0f6fc;
+      --accent-neutral: #8b949e;
+    }
+  }
+  .title { font-family: "Segoe UI","Helvetica Neue",Arial,"Noto Sans",sans-serif; font-size: 16px; font-weight: 600; fill: var(--title); }
+  .label { font-family: "Segoe UI","Helvetica Neue",Arial,"Noto Sans",sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.6px; fill: var(--label); }
+  .value { font-family: "Segoe UI","Helvetica Neue",Arial,"Noto Sans",sans-serif; font-size: 16px; font-weight: 600; }
+  .card { fill: var(--card); stroke: var(--border); }
+</style>
+<rect x='0' y='0' width='788' height='133' fill='var(--bg)' />
+<text x='16' y='34' class='title'>Repo Card</text>
+<rect x='16' y='52' width='180' height='65' class='card' />
+<rect x='16' y='52' width='180' height='6' fill='var(--accent-red)' />
+<text x='26' y='77' class='label'>PROJECT MATURITY</text>
+<text x='26' y='102' class='value' fill='var(--accent-red)'>Experimental</text>
+<rect x='208' y='52' width='180' height='65' class='card' />
+<rect x='208' y='52' width='180' height='6' fill='var(--accent-orange)' />
+<text x='218' y='77' class='label'>API POLICY</text>
+<text x='218' y='102' class='value' fill='var(--accent-orange)'>Unstable</text>
+<rect x='400' y='52' width='180' height='65' class='card' />
+<rect x='400' y='52' width='180' height='6' fill='var(--accent-green)' />
+<text x='410' y='77' class='label'>MAINTENANCE STATUS</text>
+<text x='410' y='102' class='value' fill='var(--accent-green)'>Active</text>
+<rect x='592' y='52' width='180' height='65' class='card' />
+<rect x='592' y='52' width='180' height='6' fill='var(--accent-blue)' />
+<text x='602' y='77' class='label'>INTENDED AUDIENCE</text>
+<text x='602' y='102' class='value' fill='var(--accent-blue)'>Developers</text>
+</svg>

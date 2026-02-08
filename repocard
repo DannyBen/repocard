@@ -4,7 +4,7 @@
 
 set -euo pipefail
 
-version=0.1.1
+version=0.2.0
 
 if [[ "${1:-}" == "-v" || "${1:-}" == "--version" ]]; then
   echo "repocard v$version"
@@ -19,7 +19,6 @@ if [[ ! -f "$conf_file" ]]; then
 fi
 
 # Defaults (keep minimal, fixed sizing)
-layout="standard"
 caption="Repo Card"
 cols=4
 width=180
@@ -28,23 +27,32 @@ gap=12
 padding=16
 title_height=28
 bg="f7f7f5"
+bg_dark="161b22"
 title="1f2328"
+title_dark="f0f6fc"
 label="5a6572"
+label_dark="8b949e"
 border="e6e6e2"
+border_dark="30363d"
 card="ffffff"
+card_dark="0d1117"
 
 green="1a7f37"
+green_dark="3fb950"
 yellow="b78103"
+yellow_dark="d29922"
 orange="d16c00"
+orange_dark="db6d28"
 red="cc3344"
+red_dark="f85149"
 blue="0b62d6"
-black="1f2328"
-grey="6b7280"
+blue_dark="58a6ff"
+strong="1f2328"
+strong_dark="f0f6fc"
+neutral="6b7280"
+neutral_dark="8b949e"
 
 items=()
-caption_set=0
-bg_set=0
-padding_set=0
 
 trim() {
   local s="$1"
@@ -77,35 +85,29 @@ while IFS= read -r line || [[ -n "$line" ]]; do
   fi
 
   case "$key" in
-    layout)
-      layout="$val"
-      if [[ "$layout" == "compact" ]]; then
-        if [[ "$caption_set" -eq 0 ]]; then caption=""; fi
-        if [[ "$bg_set" -eq 0 ]]; then bg="none"; fi
-        if [[ "$padding_set" -eq 0 ]]; then padding=0; fi
-      fi
-      ;;
     caption) caption="$val" ;;
     cols) cols="$val" ;;
     width) width="$val" ;;
     height) height="$val" ;;
     gap) gap="$val" ;;
-    padding) padding="$val"; padding_set=1 ;;
-    bg) bg="$val"; bg_set=1 ;;
+    padding) padding="$val" ;;
+    bg) bg="$val" ;;
+    bg_dark) bg_dark="$val" ;;
     title) title="$val" ;;
+    title_dark) title_dark="$val" ;;
     label) label="$val" ;;
+    label_dark) label_dark="$val" ;;
     border) border="$val" ;;
+    border_dark) border_dark="$val" ;;
     card) card="$val" ;;
-    green|yellow|orange|red|blue|black|grey) printf -v "$key" "%s" "$val" ;;
+    card_dark) card_dark="$val" ;;
+    green|yellow|orange|red|blue|strong|neutral) printf -v "$key" "%s" "$val" ;;
+    green_dark|yellow_dark|orange_dark|red_dark|blue_dark|strong_dark|neutral_dark) printf -v "$key" "%s" "$val" ;;
   esac
-
-  if [[ "$key" == "caption" ]]; then
-    caption_set=1
-  fi
 done < "$conf_file"
 
 if [[ "${#items[@]}" -eq 0 ]]; then
-  items=("No data|grey|Add items")
+  items=("No data|neutral|Add items")
 fi
 
 if [[ "$cols" -lt 1 ]]; then cols=1; fi
@@ -142,19 +144,71 @@ color_or_none() {
   esac
 }
 
+accent_color() {
+  local name="$1"
+  case "$name" in
+    green|yellow|orange|red|blue|strong|neutral)
+      printf "var(--accent-%s)" "$name"
+      ;;
+    *)
+      if [[ "$name" =~ ^#?[[:xdigit:]]{3}([[:xdigit:]]{3})?$ ]]; then
+        if [[ "$name" == \#* ]]; then
+          printf "%s" "$name"
+        else
+          printf "#%s" "$name"
+        fi
+      else
+        printf "var(--accent-neutral)"
+      fi
+      ;;
+  esac
+}
+
 bg_fill="$(color_or_none "$bg")"
-card_fill="$(color_or_none "$card")"
-border_stroke="$(color_or_none "$border")"
+bg_fill_dark="$(color_or_none "$bg_dark")"
+card_fill="var(--card)"
+border_stroke="var(--border)"
 
 echo "<!-- Generated with repocard v${version} (https://github.com/dannyben/repocard) -->"
 echo "<svg xmlns='http://www.w3.org/2000/svg' width='${svg_width}' height='${svg_height}' viewBox='0 0 ${svg_width} ${svg_height}'>"
 echo "<style>"
-echo "  .title { font-family: ${font_stack}; font-size: 16px; font-weight: 600; fill: #${title}; }"
-echo "  .label { font-family: ${font_stack}; font-size: 11px; font-weight: 600; letter-spacing: 0.6px; fill: #${label}; }"
+echo "  :root {"
+echo "    color-scheme: light dark;"
+echo "    --title: #${title};"
+echo "    --label: #${label};"
+echo "    --border: #${border};"
+echo "    --card: #${card};"
+echo "    --bg: ${bg_fill};"
+echo "    --accent-green: #${green};"
+echo "    --accent-yellow: #${yellow};"
+echo "    --accent-orange: #${orange};"
+echo "    --accent-red: #${red};"
+echo "    --accent-blue: #${blue};"
+echo "    --accent-strong: #${strong};"
+echo "    --accent-neutral: #${neutral};"
+echo "  }"
+echo "  @media (prefers-color-scheme: dark) {"
+echo "    :root {"
+echo "      --title: #${title_dark};"
+echo "      --label: #${label_dark};"
+echo "      --border: #${border_dark};"
+echo "      --card: #${card_dark};"
+echo "      --bg: ${bg_fill_dark};"
+echo "      --accent-green: #${green_dark};"
+echo "      --accent-yellow: #${yellow_dark};"
+echo "      --accent-orange: #${orange_dark};"
+echo "      --accent-red: #${red_dark};"
+echo "      --accent-blue: #${blue_dark};"
+echo "      --accent-strong: #${strong_dark};"
+echo "      --accent-neutral: #${neutral_dark};"
+echo "    }"
+echo "  }"
+echo "  .title { font-family: ${font_stack}; font-size: 16px; font-weight: 600; fill: var(--title); }"
+echo "  .label { font-family: ${font_stack}; font-size: 11px; font-weight: 600; letter-spacing: 0.6px; fill: var(--label); }"
 echo "  .value { font-family: ${font_stack}; font-size: 16px; font-weight: 600; }"
 echo "  .card { fill: ${card_fill}; stroke: ${border_stroke}; }"
 echo "</style>"
-echo "<rect x='0' y='0' width='${svg_width}' height='${svg_height}' fill='${bg_fill}' />"
+echo "<rect x='0' y='0' width='${svg_width}' height='${svg_height}' fill='var(--bg)' />"
 
 if [[ -n "$caption" ]]; then
   echo "<text x='${padding}' y='$((padding + 18))' class='title'>$(esc "$caption")</text>"
@@ -174,15 +228,12 @@ for item in "${items[@]}"; do
   x=$((padding + col * (width + gap)))
   y=$((start_y + row * (height + gap)))
 
-  accent="$grey"
-  case "$color" in
-    green|yellow|orange|red|blue|black|grey) accent="${!color}" ;;
-  esac
+  accent="$(accent_color "$color")"
 
   echo "<rect x='${x}' y='${y}' width='${width}' height='${height}' class='card' />"
-  echo "<rect x='${x}' y='${y}' width='${width}' height='6' fill='#${accent}' />"
+  echo "<rect x='${x}' y='${y}' width='${width}' height='6' fill='${accent}' />"
   echo "<text x='$((x + 10))' y='$((y + 25))' class='label'>$(esc "${label^^}")</text>"
-  echo "<text x='$((x + 10))' y='$((y + 50))' class='value' fill='#${accent}'>$(esc "$value")</text>"
+  echo "<text x='$((x + 10))' y='$((y + 50))' class='value' fill='${accent}'>$(esc "$value")</text>"
 
   i=$((i + 1))
 done
