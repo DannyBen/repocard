@@ -1,6 +1,6 @@
 # repocard
 
-![repocard](repocard.svg)
+![repocard](https://repocard.dannyben.com/svg/repocard.svg)
 
 Generate a simple SVG repo card that summarizes repository metadata from a tiny
 config file. Supports any number of cards and arbitrary Label=Value pairs.
