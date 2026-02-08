@@ -1,0 +1,3 @@
+# For development purposes, for git-changelog
+export CHANGELOG_COMMIT_URL=https://github.com/DannyBen/repocard/commit/%h
+export CHANGELOG_COMPARE_URL=https://github.com/DannyBen/repocard/compare/%s
